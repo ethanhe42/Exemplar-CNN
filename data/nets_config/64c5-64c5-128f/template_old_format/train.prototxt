@@ -1,0 +1,181 @@
+name: "@NET_NAME@"
+layers {
+  layer {
+    name: "data"
+    type: "data"
+    source: "@DATASET@/data-leveldb"
+    meanfile: "@MEAN_FOLDER@/mean.binaryproto"
+    batchsize: @BATCHSIZE@
+    scale: 0.00390625
+  }
+  top: "data"
+  top: "label"
+}
+layers {
+  layer {
+    name: "pad1"
+    type: "padding"
+    pad: 2
+  }
+  bottom: "data"
+  top: "pad1"
+}
+layers {
+  layer {
+    name: "conv1"
+    type: "conv"
+    num_output: 64
+    kernelsize: 5
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.0001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+    blobs_lr: 1.
+    blobs_lr: 2.
+    weight_decay: 0.
+    weight_decay: 0.     
+  }
+  bottom: "pad1"
+  top: "conv1"
+}
+layers {
+  layer {
+    name: "relu1"
+    type: "relu"
+  }
+  bottom: "conv1"
+  top: "conv1"
+}
+layers {
+  layer {
+    name: "pool1"
+    type: "pool"
+    pool: MAX
+    kernelsize: 3
+    stride: 2
+  }
+  bottom: "conv1"
+  top: "pool1"
+}
+layers {
+  layer {
+    name: "pad2"
+    type: "padding"
+    pad: 2
+  }
+  bottom: "pool1"
+  top: "pad2"
+}
+layers {
+  layer {
+    name: "conv2"
+    type: "conv"
+    num_output: 64
+    kernelsize: 5
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+    blobs_lr: 1.
+    blobs_lr: 2.
+    weight_decay: 0.
+    weight_decay: 0.    
+  }
+  bottom: "pad2"
+  top: "conv2"
+}
+layers {
+  layer {
+    name: "relu2"
+    type: "relu"
+  }
+  bottom: "conv2"
+  top: "conv2"
+}
+layers {
+  layer {
+    name: "pool2"
+    type: "pool"
+    pool: MAX
+    kernelsize: 3
+    stride: 2
+  }
+  bottom: "conv2"
+  top: "pool2"
+}
+layers {
+  layer {
+    name: "fc3"
+    type: "innerproduct"
+    num_output: 128
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+    blobs_lr: 1.
+    blobs_lr: 2.
+    weight_decay: 1.
+    weight_decay: 0.
+  }
+  bottom: "pool2"
+  top: "fc3"
+}
+layers {
+  layer {
+    name: "relu3"
+    type: "relu"
+  }
+  bottom: "fc3"
+  top: "fc3"
+}
+layers {
+  layer {
+    name: "drop3"
+    type: "dropout"
+    dropout_ratio: 0.5
+  }
+  bottom: "fc3"
+  top: "fc3"
+}
+layers {
+  layer {
+    name: "fc4"
+    type: "innerproduct"
+    num_output: @NUM_CLASSES@
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+    blobs_lr: 0.25
+    blobs_lr: 2.
+    weight_decay: 4.
+    weight_decay: 0.
+  }
+  bottom: "fc3"
+  top: "fc4"
+}
+layers {
+  layer {
+    name: "loss"
+    type: "softmax_loss"
+  }
+  bottom: "fc4"
+  bottom: "label"
+}

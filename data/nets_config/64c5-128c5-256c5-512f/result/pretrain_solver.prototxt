@@ -1,0 +1,16 @@
+train_net: "/home/dosovits/Dokumente/Drafts/CNN_augmented_data/NIPS_final/toolbox/data/nets_config/64c5-128c5-256c5-512f/result/pretrain_train.prototxt"
+test_net: "/home/dosovits/Dokumente/Drafts/CNN_augmented_data/NIPS_final/toolbox/data/nets_config/64c5-128c5-256c5-512f/result/pretrain_test.prototxt"
+test_iter: 5
+test_interval: 50
+base_lr: .01
+lr_policy: "fixed"
+display: 10
+max_iter: 1
+momentum: 0.9
+weight_decay: .004
+snapshot: 1000
+snapshot_prefix: "64c5-128c5-256c5-512f_STL_leveldb-16000-16000_1_pretrain"
+termination_criterion: MAX_ITER
+device_id: 0
+snapshot_on_exit: 1
+

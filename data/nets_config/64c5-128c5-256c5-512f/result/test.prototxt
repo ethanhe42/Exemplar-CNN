@@ -1,0 +1,125 @@
+name: "CaffeNet"
+layers {
+  name: "data"
+  type: DATA
+  top: "data"
+  top: "label"
+  data_param {
+    source: "/home/dosovits/Dokumente/Drafts/CNN_augmented_data/NIPS_final/toolbox/data/STL_leveldb/16000/data-leveldb"
+    mean_file: "/home/dosovits/Dokumente/Drafts/CNN_augmented_data/NIPS_final/toolbox/data/STL_leveldb/16000/mean.binaryproto"
+    batch_size: 128
+    scale: 0.00390625
+  }
+}
+layers {
+  name: "conv1"
+  type: CONVOLUTION
+  bottom: "data"
+  top: "conv1"
+  convolution_param {
+    num_output: 64
+    pad: 2
+    kernel_size: 5
+    stride: 1
+  }
+}
+layers {
+  name: "relu1"
+  type: RELU
+  bottom: "conv1"
+  top: "conv1"
+}
+layers {
+  name: "pool1"
+  type: POOLING
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layers {
+  name: "conv2"
+  type: CONVOLUTION
+  bottom: "pool1"
+  top: "conv2"
+  convolution_param {
+    num_output: 128
+    pad: 2
+    kernel_size: 5
+  }
+}
+layers {
+  name: "relu2"
+  type: RELU
+  bottom: "conv2"
+  top: "conv2"
+}
+layers {
+  name: "pool2"
+  type: POOLING
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layers {
+  name: "conv3"
+  type: CONVOLUTION
+  bottom: "pool2"
+  top: "conv3"
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+  }
+}
+layers {
+  name: "relu3"
+  type: RELU
+  bottom: "conv3"
+  top: "conv3"
+}
+layers {
+  name: "fc6"
+  type: INNER_PRODUCT
+  bottom: "conv3"
+  top: "fc6"
+  inner_product_param {
+    num_output: 512
+  }
+}
+layers {
+  name: "relu6"
+  type: RELU
+  bottom: "fc6"
+  top: "fc6"
+}
+layers {
+  name: "fc7"
+  type: INNER_PRODUCT
+  bottom: "fc6"
+  top: "fc7"
+  inner_product_param {
+    num_output: 16000
+  }
+}
+layers {
+  name: "prob"
+  type: SOFTMAX
+  bottom: "fc7"
+  top: "prob"
+}
+layers {
+  name: "accuracy"
+  type: ACCURACY
+  bottom: "prob"
+  bottom: "label"
+  top: "accuracy"
+}
+
